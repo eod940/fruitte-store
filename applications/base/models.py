@@ -14,9 +14,9 @@ class TimeStampedModel(models.Model):
         abstract = True
 
 
-class DiscountOption(models.Model):
+class DiscountOption:
     """
-    할인 유형을 관리하기 위한 기본 모델
+    할인 유형을 관리하기 위한 옵션들
     """
     DISCOUNT_OPTION_CHOICES = (
         ('PD', '기간할인'),  # Period Discount
@@ -28,3 +28,6 @@ class DiscountOption(models.Model):
         ('B', 'Bronze'),
         ('A', 'All'),
     )
+
+    class Meta:
+        abstract = True
