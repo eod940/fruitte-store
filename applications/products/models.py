@@ -37,15 +37,15 @@ class Item(CommonItemModel):
         db_table = "items"
 
     def __str__(self):
-        return f'<{self.item_name}>'
+        return f'{self.item_name}'
 
 
 class ItemOption(models.Model):
     """
     상품의 추가적인 옵션을 관리하기 위한 모델입니다.
     """
-    option_name = models.CharField(verbose_name="옵션명", max_length=30)
-    option_value = models.CharField(verbose_name="옵션값", max_length=30)
+    option_name = models.CharField(verbose_name="옵션명", max_length=30, help_text="무게, 용량 등")
+    option_value = models.CharField(verbose_name="옵션값", max_length=30, help_text="판매 단위")
     option_extra_price = models.IntegerField(verbose_name="옵션 추가금액", default=0)
     option_item = models.ForeignKey(
         Item,
@@ -60,7 +60,7 @@ class ItemOption(models.Model):
         db_table = "item_options"
 
     def __str__(self):
-        return f'<{self.option_name}>'
+        return f'({self.option_item})--{self.option_value}'
 
 
 class ItemImage(TimeStampedModel):
@@ -86,13 +86,14 @@ class ItemImage(TimeStampedModel):
     )
 
     class Meta:
+        verbose_name = "상품 이미지"
         db_table = "item_images"
 
     def __str__(self):
-        return f'<{self.image_item}>'
+        return f'{self.origin_name}'
 
 
-class Discount(DiscountOption):
+class Discount(models.Model):
     """
     할인 관리를 위한 모델입니다.
     base.models 에서 공통사항을 수정할 수 있습니다.
@@ -102,6 +103,7 @@ class Discount(DiscountOption):
         verbose_name="할인 유형",
         choices=DiscountOption.DISCOUNT_OPTION_CHOICES,
         default="MD",
+        max_length=5,
     )
     discount_title = models.CharField(verbose_name="할인명", max_length=50)
     discount_start = models.DateTimeField(verbose_name="할인 시작")
@@ -109,7 +111,8 @@ class Discount(DiscountOption):
     discount_target = models.CharField(
         verbose_name="할인적용범위",
         choices=DiscountOption.DISCOUNT_GRADE,
-        default="A"
+        default="A",
+        max_length=10,
     )
     discount_rate = models.PositiveIntegerField(
         verbose_name="할인률(정률, %)",
@@ -120,8 +123,8 @@ class Discount(DiscountOption):
     )
 
     class Meta:
-        verbose_name = "할인 이벤트"
         db_table = "discounts"
+        verbose_name = "할인 이벤트"
 
     def __str__(self):
-        return f'<{self.discount_title}>'
+        return f'{self.discount_title} - {self.discount_finish}까지'
