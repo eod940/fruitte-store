@@ -1,7 +1,7 @@
-from django.contrib.auth.models import User
 from django.db import models
 
-from applications.base.models import TimeStampedModel, Delivery
+from applications.accounts.models import User
+from applications.base.models import TimeStampedModel
 from applications.products.models import Item, ItemOption
 
 
@@ -15,8 +15,18 @@ class CommonOrder(TimeStampedModel):
     )
     order_status = models.CharField(verbose_name="주문 상태", choices=ORDER_STATUS, max_length=6)
 
+    class Meta:
+        abstract = True
+
 
 class Order(CommonOrder):
+    """
+    주문 관리를 위한 모델입니다.
+    """
+    DELIVERY_STATUS = (
+        ('READY', '준비중'),
+        ('COMP', '완료'),  # Complete
+    )
     buyer = models.ForeignKey(
         User,
         verbose_name="구매자",
@@ -25,16 +35,20 @@ class Order(CommonOrder):
         blank=False,
         related_name="buyer",
     )
-    delivery = models.ForeignKey(
-        Delivery,
-        verbose_name="배송정보",
-        on_delete=models.CASCADE,
-        null=False,
-        blank=False,
-    )
+    delivery = models.CharField(verbose_name="배송정보", choices=DELIVERY_STATUS, max_length=6)
+
+    class Meta:
+        verbose_name = "주문"
+        db_table = "orders"
+
+    def __str__(self):
+        return f'구매자: {self.buyer}'
 
 
 class OrderItem(models.Model):
+    """
+    주문 상품을 위한 모델입니다.
+    """
     order = models.ForeignKey(
         Order,
         verbose_name="주문",
@@ -60,3 +74,10 @@ class OrderItem(models.Model):
         related_name="order_item_option",
     )
     order_count = models.PositiveIntegerField(verbose_name="주문 수량")
+
+    class Meta:
+        verbose_name = "주문 상품"
+        db_table = "order_ items"
+
+    def __str__(self):
+        return f'{self.order}, {self.order_item_option}'

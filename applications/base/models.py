@@ -1,7 +1,6 @@
 from django.db import models
 
 # 모델링에 들어가는 공통 요소 모델입니다.
-from applications.orders.models import Order
 
 
 class TimeStampedModel(models.Model):
@@ -32,15 +31,3 @@ class DiscountOption:
 
     class Meta:
         abstract = True
-
-
-class Delivery(models.Model):
-    order = models.ForeignKey(
-        Order,
-        verbose_name="주문",
-        on_delete=models.CASCADE,
-        null=False,
-        blank=False,
-        related_name="order",
-    )
-    delivery_address = models.CharField(max_length=50)
