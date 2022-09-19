@@ -24,7 +24,7 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     # path('api/token/verify/', TokenVerifyView.as_view(), name='token_verify'),  # 토큰이 유효한지 확인 가능
-    path('accounts/', include('applications.accounts.urls'), name='accounts'),
+    path('api/accounts/', include('applications.accounts.urls'), name='accounts'),
 ]
 
 if settings.DEBUG:
